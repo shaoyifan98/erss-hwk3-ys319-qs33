@@ -6,4 +6,5 @@ public abstract class TransAction implements Action {
     public TransAction(String _accountId) {
         this.accountId = _accountId;
     }
+
 }

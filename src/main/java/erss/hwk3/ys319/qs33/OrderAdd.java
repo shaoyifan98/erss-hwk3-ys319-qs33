@@ -10,8 +10,8 @@ public class OrderAdd extends TransAction {
         super(_accountId);
         this.symbolName = _symbolName;
         this.limit = _limit;
-        this.amount = _amount;
-        if (this.amount < 0) {
+        this.amount = Math.abs(_amount);
+        if (_amount < 0) {
             isSell = true;
         }
         else {
@@ -26,6 +26,20 @@ public class OrderAdd extends TransAction {
     @Override
     public void execute() {
         
+    }
+
+    @Override
+    public String toString() {
+        StringBuilder strBuild = new StringBuilder("");
+        strBuild.append("Opening a ");
+        if (isSell) {
+            strBuild.append("selling order");
+        }
+        else {
+            strBuild.append("buying order");
+        }
+        strBuild.append(" of " + amount + " " + symbolName + " with limit " + limit + "\n");
+        return strBuild.toString();
     }
 
 }

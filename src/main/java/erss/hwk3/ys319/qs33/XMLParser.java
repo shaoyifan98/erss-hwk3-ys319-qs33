@@ -5,11 +5,23 @@ import org.xml.sax.SAXException;
 
 import javax.xml.parsers.*;
 import java.io.*;
+import java.util.ArrayList;
 
 public class XMLParser {
 
     public static int getIntFromString(String numStr) {
+        if (numStr == null) {
+            throw new IllegalArgumentException();
+        }
         int num = Integer.parseInt(numStr);
+        return num;
+    }
+
+    public static double getDoubleFromString(String doubleStr) {
+        if (doubleStr == null) {
+            throw new IllegalArgumentException();
+        }
+        double num = Double.parseDouble(doubleStr);
         return num;
     }
 
@@ -20,16 +32,24 @@ public class XMLParser {
         return builder.parse(input);
     }
 
-    public static void parseXMLString(String xmlText) throws ParserConfigurationException, SAXException, IOException {
+    public static RequestList getRequestList(String xmlText) throws ParserConfigurationException, SAXException, IOException {
         Document document = getXMLFromString(xmlText);
         Element rootElement = document.getDocumentElement();
         NodeList requests = rootElement.getChildNodes();
         if (rootElement.getNodeName().equals("create")) {
-            //return new CreationRequestList(requests);
+            return new CreationRequestList(requests);
         }
-        else if (rootElement.getNodeName().equals("transaction")) {
-            //return new TransactionRequestList(requests);
+        else if (rootElement.getNodeName().equals("transactions")) {
+            if (!rootElement.hasAttribute("id")) {
+                throw new IllegalArgumentException("No account ID for transactions");
+            }
+            String accountId = rootElement.getAttribute("account");
+            return new TransactRequestList(requests, accountId);
         }
-        //return null;
+        return null;
+    }
+
+    public static ArrayList<Action> parseXMLString(String xmlText) throws ParserConfigurationException, SAXException, IOException {
+        return getRequestList(xmlText).collect();
     }
 }
