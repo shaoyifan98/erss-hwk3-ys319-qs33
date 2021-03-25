@@ -7,8 +7,8 @@ public class OrderCancel extends OrderExec {
     }
 
     @Override
-    public void execute() {
-        
+    public String execute() {
+        return new String("");
     }
 
     @Override

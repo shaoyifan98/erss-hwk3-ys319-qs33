@@ -24,8 +24,8 @@ public class OrderAdd extends TransAction {
     }
 
     @Override
-    public void execute() {
-        
+    public String execute() {
+        return new String("");
     }
 
     @Override

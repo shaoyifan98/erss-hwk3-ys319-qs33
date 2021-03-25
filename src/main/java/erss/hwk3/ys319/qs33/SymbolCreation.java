@@ -13,8 +13,8 @@ public class SymbolCreation implements Action {
     }
 
     @Override
-    public void execute() {
-        
+    public String execute() {
+        return new String("");
     }
 
     @Override

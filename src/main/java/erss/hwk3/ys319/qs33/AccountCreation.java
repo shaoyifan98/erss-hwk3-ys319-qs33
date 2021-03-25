@@ -1,5 +1,6 @@
 package erss.hwk3.ys319.qs33;
 import java.lang.StringBuilder;
+import java.sql.SQLException;
 
 public class AccountCreation implements Action {
     private final String id;
@@ -11,8 +12,15 @@ public class AccountCreation implements Action {
     }
 
     @Override
-    public void execute() {
-        
+    public String execute() {
+
+        try {
+            DBController.getDBController().createAccount(Integer.parseInt(id), balance);
+        } catch (Exception e) {
+            // TODO Auto-generated catch block
+            return new String("account does not exist");
+        } 
+        return new String("");
     }
 
     @Override
