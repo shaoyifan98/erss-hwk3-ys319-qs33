@@ -13,14 +13,14 @@ public class AccountCreation implements Action {
 
     @Override
     public String execute() {
-
         try {
             DBController.getDBController().createAccount(Integer.parseInt(id), balance);
-        } catch (Exception e) {
-            // TODO Auto-generated catch block
-            return new String("account does not exist");
-        } 
-        return new String("");
+            return "   <created id=\"" + id + "\"/>\n";
+        }
+        catch (Exception e) {
+            String msg = e.getMessage();
+            return "   <error id=\"" + id +"\">" + msg + "</error>\n";
+        }
     }
 
     @Override

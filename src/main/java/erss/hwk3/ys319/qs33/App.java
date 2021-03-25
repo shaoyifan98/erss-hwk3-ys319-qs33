@@ -14,11 +14,11 @@ public class App {
         Connection connection = null;
         Statement statement = null;
         try{
-            String url="jdbc:postgresql://67.159.88.57:5432/mydb";
-            String user="postgres";
+            String url = "jdbc:postgresql://67.159.88.57:5432/mydb";
+            String user = "postgres";
             String password = "postgres";
             Class.forName("org.postgresql.Driver");
-            connection= DriverManager.getConnection(url, user, password);
+            connection = DriverManager.getConnection(url, user, password);
             System.out.println("hello" + connection);
             
         }
@@ -30,7 +30,6 @@ public class App {
                 connection.close();
             }
             catch (SQLException e) {
-                // TODO Auto-generated catch block
                 e.printStackTrace();
             }
         }

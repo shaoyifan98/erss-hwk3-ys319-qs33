@@ -14,7 +14,18 @@ public class SymbolCreation implements Action {
 
     @Override
     public String execute() {
-        return new String("");
+        try {
+            StringBuilder sb = new StringBuilder("");
+            for (Pair<String, Integer> target: targets) {
+                DBController.getDBController()
+                    .tryAddSymbol(XMLParser.getIntFromString(target.getFirst()), symbolName, target.getSecond());
+            }
+            return sb.toString();
+        }
+        catch (Exception e) {
+            String msg = e.getMessage();
+            return "   <error sym=\"" + symbolName + "\" id=\"" +"\">" + msg + "</error>\n";
+        }
     }
 
     @Override

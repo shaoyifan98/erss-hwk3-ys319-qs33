@@ -48,21 +48,13 @@ public class DBController {
             psql.setInt(1, id);
             psql.setDouble(2, balances);
             psql.executeUpdate();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (SQLException e) {
             e.printStackTrace();
-            throw new IllegalArgumentException("Account already exists!");
+            throw new IllegalArgumentException("Account already exists");
         }
        
     }
-
-    // public void updateSymbol(int id, String symbol, int share) throws Exception {
-    // if (share >= 0) {
-    // tryAddSymbol(id, symbol, share);
-    // }else{
-    // tryReduceSymbol(id, symbol, share);
-    // }
-    // }
 
     public void tryAddBalance(int id, double balances) throws SQLException {
         psql = connection.prepareStatement("UPDATE account SET balances = balances + ? WHERE account_id = ?");
@@ -93,7 +85,8 @@ public class DBController {
             psql.setInt(2, id);
             psql.setString(3, symbol);
             psql.executeUpdate();
-        } else {
+        }
+        else {
             // insert the symbol to the account
             psql = connection
                     .prepareStatement("INSERT INTO user_share(account_id, symbol, shares)" + "VALUES(?, ?, ?)");
@@ -128,7 +121,7 @@ public class DBController {
 
     }
 
-    public void tryAddTransactionShare(int id,  int share) throws SQLException {
+    private void tryAddTransactionShare(int id, int share) throws SQLException {
         psql = connection.prepareStatement(
                 "UPDATE transactions SET shares = shares + ? WHERE id = ?");
         psql.setInt(1, share);
@@ -136,7 +129,7 @@ public class DBController {
         psql.executeUpdate();
     }
 
-     public void tryReduceTransactionShare(int id,  int share) throws SQLException {
+    private void tryReduceTransactionShare(int id,  int share) throws SQLException {
         System.out.println("reduce order id" + id + "   " + share);
         psql = connection.prepareStatement(
                 "UPDATE transactions SET shares = shares - ? WHERE id = ?");
@@ -144,7 +137,6 @@ public class DBController {
         psql.setInt(2, id);
         psql.executeUpdate();
     }
-    
 
     public void trySellSymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
@@ -166,7 +158,7 @@ public class DBController {
 
         //get the auto generated key from the table
         int sellOrderId = 0;
-        if(rs.next()){
+        if (rs.next()) {
             sellOrderId = rs.getInt(1);
         }
 
@@ -206,7 +198,6 @@ public class DBController {
         //update the db for seller
         tryAddBalance(id, gain);
         tryReduceTransactionShare(sellOrderId, share - leftShare);
-
     }
 
     public void tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
@@ -285,8 +276,16 @@ public class DBController {
         psql.executeUpdate();
     }
 
+    public void tryCancelTransaction(int transactionId) throws SQLException {
+        psql = connection.prepareStatement(
+            "UPDATE transactions SET status = ? WHERE id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
+        psql.setInt(1, 1);
+        psql.setInt(1, transactionId);
+    }
 
-
+    public String tryQueryTransaction(int transactionId) {
+        return null;
+    }
 
     public boolean hasSymbol(int id, String symbol) {
         try {
@@ -298,16 +297,14 @@ public class DBController {
                 return true;
             }
             return false;
-
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
     }
 
     public boolean hasAccountId(int id) {
-        // int account_id = Integer.parseInt(id);
         try {
             psql = connection.prepareStatement("SELECT account_id from account WHERE account_id = ?");
             psql.setInt(1, id);
@@ -317,8 +314,8 @@ public class DBController {
             }
             return false;
 
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (SQLException e) {
             e.printStackTrace();
             return false;
         }
@@ -328,8 +325,8 @@ public class DBController {
     public void close() {
         try {
             connection.close();
-        } catch (SQLException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (SQLException e) {
             e.printStackTrace();
         }
     }
@@ -340,39 +337,16 @@ public class DBController {
 
     public static void main(String[] args) {
         DBController db = DBController.getDBController();
-        // try {
-        // db.createAccount(1);
-        // } catch (SQLException e) {
-        // // TODO Auto-generated catch block
-        // e.printStackTrace();
-        // }
-        // System.out.println(db.hasAccountId(1));
-        // System.out.println(db.hasAccountId(2));
         try {
-           // db.tryReduceSymbol(1, "bbb", 1);
-        //    db.createAccount(1, 200);
-        //    db.createAccount(2, 150);
-           //db.createAccount(3, 100);
-
            db.tryAddSymbol(1, "A", 10);
            db.tryAddSymbol(1, "B", 10);
            db.tryAddSymbol(2, "A", 5);
            db.tryAddSymbol(2, "B", 5);
            db.tryAddSymbol(3, "A", 15);
            db.tryAddSymbol(3, "B", 15);
-
-        // db.tryReduceSymbol(4, "A", 5);
-        // db.tryReduceSymbol(2, "B", 1);
-        // db.tryReduceSymbol(1, "a", 1);
-        //db.tryReduceSymbol(1, "A", 100);
-
-        //db.tryReduceBalance(2, 151);
-        // db.tryBuySymbol(2, "B", 2, 1);
-        // db.tryBuySymbol(3, "B", 2, 2);
-        db.trySellSymbol(1, "B", 3, 0.8);
+            db.trySellSymbol(1, "B", 3, 0.8);
         
         } catch (Exception e) {
-            // TODO Auto-generated catch block
             e.printStackTrace();
         }
         db.close();

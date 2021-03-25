@@ -25,6 +25,17 @@ public class OrderAdd extends TransAction {
 
     @Override
     public String execute() {
+        try {
+            if (isSell) {
+                DBController.getDBController().trySellSymbol(Integer.parseInt(accountId), symbolName, amount, limit);
+            }
+            else {
+                DBController.getDBController().tryBuySymbol(Integer.parseInt(accountId), symbolName, amount, limit);
+            }
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
         return new String("");
     }
 

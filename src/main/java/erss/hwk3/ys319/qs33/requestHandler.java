@@ -23,8 +23,8 @@ public class requestHandler implements Runnable {
             ois = new ObjectInputStream(socket.getInputStream());
             oos = new ObjectOutputStream(socket.getOutputStream());
 
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -35,27 +35,28 @@ public class requestHandler implements Runnable {
         try {
             String req = (String) ois.readObject();
             actions = XMLParser.parseXMLString(req);
+            StringBuilder sb = new StringBuilder("<results>\n");
             //execute each action
-            for(int i = 0; i < actions.size(); ++i){
-                actions.get(i).execute();
+            for(int i = 0; i < actions.size(); ++i) {
+                String result = actions.get(i).execute();
+                sb.append("   " + result);
             }
-        } catch(IllegalArgumentException e){
-            e.printStackTrace();
-            
-
-        } catch (ClassNotFoundException e) {
-            // TODO Auto-generated catch block
-            e.printStackTrace();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+            sb.append("</create>\n");
+            String resp = sb.toString();
+        }
+        catch(IllegalArgumentException e){
             e.printStackTrace();
         }
-        // TODO Auto-generated method stub
-        catch (ParserConfigurationException e) {
-            // TODO Auto-generated catch block
+        catch (ClassNotFoundException e) {
             e.printStackTrace();
-        } catch (SAXException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (ParserConfigurationException e) {
+            e.printStackTrace();
+        }
+        catch (SAXException e) {
             e.printStackTrace();
         }
 
