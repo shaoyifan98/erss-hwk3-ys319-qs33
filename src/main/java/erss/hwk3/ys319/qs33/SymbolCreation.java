@@ -19,12 +19,13 @@ public class SymbolCreation implements Action {
             for (Pair<String, Integer> target: targets) {
                 DBController.getDBController()
                     .tryAddSymbol(XMLParser.getIntFromString(target.getFirst()), symbolName, target.getSecond());
+                sb.append("   <created sym=\"" + symbolName + "\" id=\"" +"\"/>");
             }
             return sb.toString();
         }
         catch (Exception e) {
             String msg = e.getMessage();
-            return "   <error sym=\"" + symbolName + "\" id=\"" +"\">" + msg + "</error>\n";
+            return msg;
         }
     }
 

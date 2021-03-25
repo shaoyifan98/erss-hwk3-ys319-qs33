@@ -75,25 +75,32 @@ public class DBController {
 
     public void tryAddSymbol(int id, String symbol, int share) throws SQLException {
         if (!hasAccountId(id)) {
-            throw new IllegalArgumentException("Account does not exist!");
+            String errorXML = "   <error sym=\"" + symbol + "\" id=\"" + id +"\">" + "Account does not exist" + "</error>\n";
+            throw new IllegalArgumentException(errorXML);
         }
         // if the account already has the symbol, add into the existed symbol
-        if (hasSymbol(id, symbol)) {
-            psql = connection
-                    .prepareStatement("UPDATE user_share SET shares = shares + ? WHERE account_id = ? AND symbol = ?");
-            psql.setInt(1, share);
-            psql.setInt(2, id);
-            psql.setString(3, symbol);
-            psql.executeUpdate();
+        try {
+            if (hasSymbol(id, symbol)) {
+                psql = connection
+                        .prepareStatement("UPDATE user_share SET shares = shares + ? WHERE account_id = ? AND symbol = ?");
+                psql.setInt(1, share);
+                psql.setInt(2, id);
+                psql.setString(3, symbol);
+                psql.executeUpdate();
+            }
+            else {
+                // insert the symbol to the account
+                psql = connection
+                        .prepareStatement("INSERT INTO user_share(account_id, symbol, shares)" + "VALUES(?, ?, ?)");
+                psql.setInt(1, id);
+                psql.setString(2, symbol);
+                psql.setInt(3, share);
+                psql.executeUpdate();
+            }
         }
-        else {
-            // insert the symbol to the account
-            psql = connection
-                    .prepareStatement("INSERT INTO user_share(account_id, symbol, shares)" + "VALUES(?, ?, ?)");
-            psql.setInt(1, id);
-            psql.setString(2, symbol);
-            psql.setInt(3, share);
-            psql.executeUpdate();
+        catch (SQLException e) {
+            String errorXML = "   <error sym=\"" + symbol + "\" id=\"" + id +"\">" + "Unexpected DB error" + "</error>\n";
+            throw new SQLException(errorXML);
         }
     }
 
