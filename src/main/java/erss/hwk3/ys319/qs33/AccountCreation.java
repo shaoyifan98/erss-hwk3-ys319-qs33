@@ -19,7 +19,8 @@ public class AccountCreation implements Action {
         }
         catch (Exception e) {
             String msg = e.getMessage();
-            return "   <error id=\"" + id +"\">" + msg + "</error>\n";
+            Error error = new AccountCreateError(Integer.parseInt(id), msg);
+            return error.toString();
         }
     }
 

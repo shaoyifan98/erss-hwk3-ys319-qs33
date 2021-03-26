@@ -1,5 +1,6 @@
 package erss.hwk3.ys319.qs33;
 
+import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -22,27 +23,30 @@ public class DBController {
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to " + connection);
             init();
-        } catch (Exception e) {
+        }
+        catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     public void init() throws SQLException {
-        String createAccountTable = "CREATE TABLE if not exists \"account\"(account_id INTEGER primary key,balances NUMERIC(10, 2) NOT NULL)";
-        String createUserShareTable = "CREATE TABLE if not exists \"user_share\" (id SERIAL primary key, account_id INTEGER REFERENCES account(account_id), symbol character varying(100) NOT NULL, shares INTEGER NOT NULL)";
-        String createTransactionsTable = "CREATE TABLE if not exists \"transactions\"(id SERIAL primary key,account_id INTEGER REFERENCES account(account_id),symbol character varying(100) NOT NULL,shares INTEGER NOT NULL, limit_price NUMERIC(10, 2) NOT NULL, is_sell BOOLEAN NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0), status INTEGER  DEFAULT 0)";
-        String createExecutedTable = "CREATE TABLE if not exists \"executed\"(id SERIAL primary key,transaction_id INTEGER REFERENCES transactions(id), account_id INTEGER REFERENCES account(account_id),symbol character varying(100) NOT NULL,shares INTEGER NOT NULL, price NUMERIC(10, 2) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0))";
+        String createAccountTable = 
+            "CREATE TABLE if not exists \"account\"(account_id INTEGER primary key,balances NUMERIC(10, 2) NOT NULL)";
+        String createUserShareTable = 
+            "CREATE TABLE if not exists \"user_share\" (id SERIAL primary key, account_id INTEGER REFERENCES account(account_id), symbol character varying(100) NOT NULL, shares INTEGER NOT NULL)";
+        String createTransactionsTable = 
+            "CREATE TABLE if not exists \"transactions\"(id SERIAL primary key,account_id INTEGER REFERENCES account(account_id),symbol character varying(100) NOT NULL,shares INTEGER NOT NULL, limit_price NUMERIC(10, 2) NOT NULL, is_sell BOOLEAN NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0), status INTEGER  DEFAULT 0)";
+        String createExecutedTable = 
+            "CREATE TABLE if not exists \"executed\"(id SERIAL primary key,transaction_id INTEGER REFERENCES transactions(id), account_id INTEGER REFERENCES account(account_id),symbol character varying(100) NOT NULL,shares INTEGER NOT NULL, price NUMERIC(10, 2) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0))";
 
         statement = connection.createStatement();
         statement.executeUpdate(createAccountTable);
         statement.executeUpdate(createUserShareTable);
         statement.executeUpdate(createTransactionsTable);
         statement.executeUpdate(createExecutedTable);
-
     }
 
     public void createAccount(int id, double balances) {
-        // int account_id = Integer.parseInt(id);
         try {
             psql = connection.prepareStatement("INSERT INTO account(account_id, balances)" + "VALUES(?, ?)");
             psql.setInt(1, id);
@@ -53,53 +57,57 @@ public class DBController {
             e.printStackTrace();
             throw new IllegalArgumentException("Account already exists");
         }
-       
     }
 
-    public void tryAddBalance(int id, double balances) throws SQLException {
+    private void tryAddBalance(int id, double balances) throws SQLException {
         psql = connection.prepareStatement("UPDATE account SET balances = balances + ? WHERE account_id = ?");
         psql.setDouble(1, balances);
         psql.setInt(2, id);
         psql.executeUpdate();
     }
 
-    public void tryReduceBalance(int id, double balances) throws SQLException {
+    private void tryReduceBalance(int id, double balances) throws SQLException {
         psql = connection.prepareStatement("UPDATE account SET balances = balances - ? WHERE account_id = ? AND balances >= ?");
         psql.setDouble(1, balances);
         psql.setInt(2, id);
         psql.setDouble(3, balances);
         if (psql.executeUpdate() == 0) { // if no records are updated
-            throw new IllegalArgumentException("Account does not have enough money!");
+            throw new IllegalArgumentException("Account does not have enough money");
         }
     }
 
-    public void tryAddSymbol(int id, String symbol, int share) throws SQLException {
+    private void tryAddSymbol(int id, String symbol, int share) throws SQLException {
         if (!hasAccountId(id)) {
-            String errorXML = "   <error sym=\"" + symbol + "\" id=\"" + id +"\">" + "Account does not exist" + "</error>\n";
-            throw new IllegalArgumentException(errorXML);
+            throw new IllegalArgumentException("Account does not exist");
         }
         // if the account already has the symbol, add into the existed symbol
-        try {
-            if (hasSymbol(id, symbol)) {
-                psql = connection
-                        .prepareStatement("UPDATE user_share SET shares = shares + ? WHERE account_id = ? AND symbol = ?");
-                psql.setInt(1, share);
-                psql.setInt(2, id);
-                psql.setString(3, symbol);
-                psql.executeUpdate();
-            }
-            else {
-                // insert the symbol to the account
-                psql = connection
-                        .prepareStatement("INSERT INTO user_share(account_id, symbol, shares)" + "VALUES(?, ?, ?)");
-                psql.setInt(1, id);
-                psql.setString(2, symbol);
-                psql.setInt(3, share);
-                psql.executeUpdate();
-            }
+        if (hasSymbol(id, symbol)) {
+            psql = connection
+                    .prepareStatement("UPDATE user_share SET shares = shares + ? WHERE account_id = ? AND symbol = ?");
+            psql.setInt(1, share);
+            psql.setInt(2, id);
+            psql.setString(3, symbol);
+            psql.executeUpdate();
         }
-        catch (SQLException e) {
-            String errorXML = "   <error sym=\"" + symbol + "\" id=\"" + id +"\">" + "Unexpected DB error" + "</error>\n";
+        else {
+            // insert the symbol to the account
+            psql = connection
+                    .prepareStatement("INSERT INTO user_share(account_id, symbol, shares)" + "VALUES(?, ?, ?)");
+            psql.setInt(1, id);
+            psql.setString(2, symbol);
+            psql.setInt(3, share);
+            psql.executeUpdate();
+        }
+    }
+
+    public void createSymbol(String idStr, String symbol, int share) throws Exception {
+        try {
+            int id = Integer.parseInt(idStr);
+            tryAddSymbol(id, symbol, share);
+        }
+        catch (Exception e) {
+            Error error = new SymbolCreateError(symbol, idStr, e.getMessage());
+            String errorXML = error.toString();
             throw new SQLException(errorXML);
         }
     }
@@ -112,7 +120,7 @@ public class DBController {
      * @param share
      * @throws SQLException
      */
-    public void tryReduceSymbol(int id, String symbol, int share) throws SQLException {
+    private void tryReduceSymbol(int id, String symbol, int share) throws SQLException {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -125,15 +133,6 @@ public class DBController {
         if (psql.executeUpdate() == 0) { // if no records are updated
             throw new IllegalArgumentException("Account does not have enough share!");
         }
-
-    }
-
-    private void tryAddTransactionShare(int id, int share) throws SQLException {
-        psql = connection.prepareStatement(
-                "UPDATE transactions SET shares = shares + ? WHERE id = ?");
-        psql.setInt(1, share);
-        psql.setInt(2, id);
-        psql.executeUpdate();
     }
 
     private void tryReduceTransactionShare(int id,  int share) throws SQLException {
@@ -239,7 +238,6 @@ public class DBController {
         psql.setDouble(3, price);
         psql.executeQuery();
         rs = psql.executeQuery();
-        
 
         double gain = 0; //the money buyer left 
         int leftShare = share; //the share which are waited to be matched
@@ -270,8 +268,24 @@ public class DBController {
         tryReduceTransactionShare(buyOrderId, share - leftShare);
     }
 
+    public void openOrder(String idStr, String symbol, int share, double price, boolean isSell) {
+        try {
+            int id = Integer.parseInt(idStr);
+            if (isSell) {
+                trySellSymbol(id, symbol, share, price);
+            }
+            else {
+                tryBuySymbol(id, symbol, share, price);
+            }
+        }
+        catch (Exception e) {
+            String msg = e.getMessage();
+            Error error = new TransAddError(symbol, share, price, msg);
+            throw new RuntimeException(error.toString());
+        }
+    }
 
-    public void tryAddIntoExecuted(int transactionId, int accountId, String symbol, int share, double price)
+    private void tryAddIntoExecuted(int transactionId, int accountId, String symbol, int share, double price)
             throws SQLException {
         psql = connection.prepareStatement(
             "INSERT INTO executed(transaction_id, account_id, symbol, shares, price)" + "VALUES(?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
@@ -283,15 +297,97 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public void tryCancelTransaction(int transactionId) throws SQLException {
-        psql = connection.prepareStatement(
-            "UPDATE transactions SET status = ? WHERE id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
-        psql.setInt(1, 1);
-        psql.setInt(1, transactionId);
+    public String cancelTransaction(String transactionIdStr) throws SQLException {
+        try {
+            int transactionId = Integer.parseInt(transactionIdStr);
+            psql = connection.prepareStatement(
+                "UPDATE transactions SET status = ? AND create_at = ? WHERE id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
+            psql.setInt(1, 1);
+            psql.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
+            psql.setInt(3, transactionId);
+            if (psql.executeUpdate() == 0) {
+                String msg = "Transcation does not exist";
+                Error error = new TransCancelError(transactionIdStr, msg);
+                throw new IllegalArgumentException(error.toString());
+            }
+            StringBuilder sb = new StringBuilder("<canceled id=\"" + transactionId + "\">\n");
+            sb.append(tryQueryUnexecuted(transactionId));
+            sb.append(tryQueryExecuted(transactionId));
+            sb.append("</canceled>\n");
+            return sb.toString();
+        }
+        catch (NumberFormatException e) {
+            String msg = e.getMessage();
+            Error error = new TransCancelError(transactionIdStr, msg);
+            return error.toString();
+        }
     }
 
-    public String tryQueryTransaction(int transactionId) {
-        return null;
+    private String tryQueryUnexecuted(int transactionId) throws SQLException {
+        psql = connection.prepareStatement(
+            "SELECT shares, status, created_at from transactions WHERE transaction_id = ?",
+            PreparedStatement.RETURN_GENERATED_KEYS
+        );
+        ResultSet rs = psql.executeQuery();
+        // has a result
+        if (rs.next()) {
+            int shares = rs.getInt(1);
+            if (shares == 0) {
+                return "";
+            }
+            int status = rs.getInt(2);
+            if (status == 0) {
+                return "      <open shares=\"" + shares + "\"/>";
+            }
+            else {
+                return "      <canceled shares=\"" + shares + "\"/>";
+            }
+        }
+        else {
+            String msg = "Transaction does not exist";
+            throw new IllegalArgumentException("   <error id=\"" + transactionId + "\">" + msg + "</error>\n");
+        }
+    }
+
+    private String tryQueryExecuted(int transactionId) throws SQLException {
+        psql = connection.prepareStatement(
+            "SELECT shares, price, created_at from executed WHERE transaction_id = ?",
+            PreparedStatement.RETURN_GENERATED_KEYS
+        );
+        ResultSet rs = psql.executeQuery();
+        StringBuilder sb = new StringBuilder();
+        while (rs.next()) {
+            int shares = rs.getInt(1);
+            double price = rs.getDouble(2);
+            // Time t = rs.getTime(3);
+            java.sql.Timestamp t = rs.getTimestamp(3);
+            sb.append("      <executed shares=\"" + shares + "\" price=\"" + price + "\" time=\"" + t + "\"/>\n");
+        }
+        return sb.toString();
+    }
+
+    public String queryTransaction(String transactionIdStr) throws SQLException {
+        StringBuilder result = new StringBuilder("   <status> id=\"" + transactionIdStr + "\">" + "\n");
+        try {
+            int transactionId = Integer.parseInt(transactionIdStr);
+            // query open/cancelled
+            result.append(tryQueryUnexecuted(transactionId));
+            // query executed
+            result.append(tryQueryExecuted(transactionId));
+        }
+        catch (NumberFormatException e0) {
+            String msg = e0.getMessage();
+            throw new NumberFormatException("   <error id=\"" + transactionIdStr + "\">" + msg + "</error>\n");
+        }
+        catch (SQLException e1) {
+            String msg = "Unexpected SQL exception";
+            throw new SQLException("   <error id=\"" + transactionIdStr + "\">" + msg + "</error>\n");
+        }
+        catch (IllegalArgumentException e2) {
+            throw e2;
+        }
+        result.append("   </status>\n");
+        return result.toString();
     }
 
     public boolean hasSymbol(int id, String symbol) {
@@ -351,7 +447,7 @@ public class DBController {
            db.tryAddSymbol(2, "B", 5);
            db.tryAddSymbol(3, "A", 15);
            db.tryAddSymbol(3, "B", 15);
-            db.trySellSymbol(1, "B", 3, 0.8);
+           db.trySellSymbol(1, "B", 3, 0.8);
         
         } catch (Exception e) {
             e.printStackTrace();

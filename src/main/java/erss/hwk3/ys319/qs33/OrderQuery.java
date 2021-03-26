@@ -8,7 +8,12 @@ public class OrderQuery extends OrderExec {
 
     @Override
     public String execute() {
-        return new String("");
+        try {
+            return DBController.getDBController().queryTransaction(transactId);
+        }
+        catch (Exception e) {
+            return e.getMessage();
+        }
     }
 
     @Override

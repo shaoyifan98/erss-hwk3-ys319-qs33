@@ -59,6 +59,9 @@ public class CreationRequestList implements RequestList {
 
     @Override
     public ArrayList<Action> collect() {
+        if (requests == null) {
+            return null;
+        }
         ArrayList<Action> actions = new ArrayList<>();
         for (int i = 0; i < requests.getLength(); i++) {
             if (requests.item(i).getNodeType() == Node.ELEMENT_NODE) {
