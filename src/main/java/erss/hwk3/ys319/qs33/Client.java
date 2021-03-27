@@ -1,5 +1,7 @@
 package erss.hwk3.ys319.qs33;
 
+import java.io.BufferedWriter;
+import java.io.FileWriter;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -10,6 +12,7 @@ public class Client extends Thread{
     private ObjectOutputStream oos;
     private Socket s;
     private String toHandle;
+    private static int index = 0;
 
     public Client(String host, int port, String toHandle) {
         try {
@@ -35,15 +38,23 @@ public class Client extends Thread{
         String actual = "";
 		try {
 			actual = getServerResponse(toHandle);
-		} catch (ClassNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		}
+        catch (Exception e) {
 			e.printStackTrace();
 		}
-            //test.verifyIthResponse(actual, i);
         System.out.println(actual);
+        BufferedWriter outFile;
+        try {
+            String filename = "act" + index + ".txt";
+            System.out.println(index);
+            index++;
+            outFile = new BufferedWriter(new FileWriter(filename));
+            outFile.write(actual + "\n");
+            outFile.close();
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
         close();
     }
 
@@ -52,21 +63,18 @@ public class Client extends Thread{
             oos.close();
             ois.close();
             s.close();
-        } catch (IOException e) {
-            // TODO Auto-generated catch block
+        }
+        catch (IOException e) {
             e.printStackTrace();
         }
-        
     }
 
     public static void main(String[] args) throws ClassNotFoundException, IOException {
         TestSupplier test = new TestSupplier();
-       
         for (int i = 0; i < test.getTestSize(); i++) {
             String toHandle = test.getIthTest(i);
             Client myClient = new Client("127.0.0.1", 12345, toHandle);
             myClient.run();
-            //myClient.start();
         }
     }
 }

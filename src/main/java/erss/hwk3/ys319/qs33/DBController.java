@@ -342,11 +342,11 @@ public class DBController {
             }
             int status = rs.getInt(2);
             if (status == 0) {
-                return "      <open shares=\"" + shares + "\"/>";
+                return "      <open shares=\"" + shares + "\"/>\n";
             }
             else {
                 java.sql.Timestamp t = rs.getTimestamp(3);
-                return "      <canceled shares=\"" + shares + "\" time=\"" + t + "\"/>";
+                return "      <canceled shares=\"" + shares + "\" time=\"" + t + "\"/>\n";
             }
         }
         else {
@@ -371,7 +371,7 @@ public class DBController {
     }
 
     public synchronized String queryTransaction(String transactionIdStr) throws SQLException {
-        StringBuilder result = new StringBuilder("   <status> id=\"" + transactionIdStr + "\">" + "\n");
+        StringBuilder result = new StringBuilder("   <status id=\"" + transactionIdStr + "\">" + "\n");
         try {
             int transactionId = Integer.parseInt(transactionIdStr);
             // query open/cancelled

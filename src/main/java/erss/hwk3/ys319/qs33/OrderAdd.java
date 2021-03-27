@@ -28,12 +28,12 @@ public class OrderAdd extends TransAction {
         try {
             int transactionId = DBController.getDBController().openOrder(accountId, symbolName, amount, limit, isSell);
             if (isSell) {
-                return "    <opened sym=\"" + symbolName + "\" amount=-\"" + amount 
-                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\">\n";
+                return "   <opened sym=\"" + symbolName + "\" amount=\"-" + amount 
+                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\"/>\n";
             }
             else {
-                return "    <opened sym=\"" + symbolName + "\" amount=\"" + amount 
-                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\">\n";
+                return "   <opened sym=\"" + symbolName + "\" amount=\"" + amount 
+                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\"/>\n";
             }
         }
         catch (Exception e) {

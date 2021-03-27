@@ -2,7 +2,7 @@
    <order sym="INTEL" amount="-100" limit="170"/> 
    <order sym="AMD" amount="-20" limit="15"/> 
    <query id="3"/> 
-   <cancel id="4"/> 
+   <cancel id="4"/>
    <order sym="INTEL" amount="400" limit="180"/> 
-   <query id="7"/>
+   <query id="8"/>
 </transactions>

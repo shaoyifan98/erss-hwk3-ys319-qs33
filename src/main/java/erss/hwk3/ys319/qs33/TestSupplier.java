@@ -17,12 +17,13 @@ public class TestSupplier {
         int numOfTests = 6;
         for (int i = 0; i < numOfTests; i++) {
            // erss-hwk3-ys319-qs33/tests/test0.txt
-           // String testPathStr = "./tests/test" + i + ".txt";
-            String testPathStr = "./erss-hwk3-ys319-qs33/tests/test" + i + ".txt";
+            String testPathStr = "./tests/test" + i + ".txt";
+            //String testPathStr = "./erss-hwk3-ys319-qs33/tests/test" + i + ".txt";
             //File tests = new File(testPathStr);
             //System.out.println(System.getProperty("user.dir"));
             Path testPath = Paths.get(testPathStr);
-            String ansPathStr = "./erss-hwk3-ys319-qs33/tests/ans" + i + ".txt";
+            //String ansPathStr = "./erss-hwk3-ys319-qs33/tests/ans" + i + ".txt";
+            String ansPathStr = "./tests/ans" + i + ".txt";
             Path ansPath = Paths.get(ansPathStr);
             String test = Files.readString(testPath);
             //System.out.println("client content:" + test);

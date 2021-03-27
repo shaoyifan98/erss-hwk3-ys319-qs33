@@ -8,8 +8,8 @@
    <opened sym="INTEL" amount="400" limit="180.0" id="8"/>
    <status id="8">
       <open shares="100"/>
-      <executed shares="200" price="150.0" time="0000000000"/>
-      <executed shares="100" price="170.0" time="0000000000"/>
+      <executed shares="200" price="150.0" time="2021-03-27 06:52:13.0"/>
+      <executed shares="100" price="170.0" time="2021-03-27 06:52:13.0"/>
    </status>
 </results>
 
