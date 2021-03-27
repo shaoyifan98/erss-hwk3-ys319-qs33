@@ -18,8 +18,8 @@ public class Client {
     public Client(String host, int port) {
         try {
             s = new Socket(host, port);
-            ois = new ObjectInputStream(s.getInputStream());
             oos = new ObjectOutputStream(s.getOutputStream());
+            ois = new ObjectInputStream(s.getInputStream());
         } catch (UnknownHostException e) {
             // TODO Auto-generated catch block
             e.printStackTrace();
