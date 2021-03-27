@@ -23,6 +23,7 @@ public class Server {
         while(true){
             try {
                 Socket socket = serverSocket.accept();
+                es.submit(new RequestHandler(socket));
             } catch (IOException e) {
                 // TODO Auto-generated catch block
                 e.printStackTrace();

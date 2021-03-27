@@ -46,7 +46,7 @@ public class DBController {
         statement.executeUpdate(createExecutedTable);
     }
 
-    public void createAccount(int id, double balances) {
+    public synchronized void  createAccount(int id, double balances) {
         try {
             psql = connection.prepareStatement("INSERT INTO account(account_id, balances)" + "VALUES(?, ?)");
             psql.setInt(1, id);
@@ -76,7 +76,7 @@ public class DBController {
         }
     }
 
-    private void tryAddSymbol(int id, String symbol, int share) throws SQLException {
+    private synchronized void tryAddSymbol(int id, String symbol, int share) throws SQLException {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist");
         }
@@ -100,7 +100,7 @@ public class DBController {
         }
     }
 
-    public void createSymbol(String idStr, String symbol, int share) throws Exception {
+    public synchronized void createSymbol(String idStr, String symbol, int share) throws Exception {
         try {
             int id = Integer.parseInt(idStr);
             tryAddSymbol(id, symbol, share);
@@ -120,7 +120,7 @@ public class DBController {
      * @param share
      * @throws SQLException
      */
-    private void tryReduceSymbol(int id, String symbol, int share) throws SQLException {
+    private synchronized void tryReduceSymbol(int id, String symbol, int share) throws SQLException {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -136,7 +136,7 @@ public class DBController {
     }
 
     private void tryReduceTransactionShare(int id,  int share) throws SQLException {
-        System.out.println("reduce order id" + id + "   " + share);
+        //System.out.println("reduce order id" + id + "   " + share);
         psql = connection.prepareStatement(
                 "UPDATE transactions SET shares = shares - ? WHERE id = ?");
         psql.setInt(1, share);
@@ -144,7 +144,7 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public void trySellSymbol(int id, String symbol, int share, double price) throws Exception {
+    public synchronized void trySellSymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -206,7 +206,7 @@ public class DBController {
         tryReduceTransactionShare(sellOrderId, share - leftShare);
     }
 
-    public void tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
+    public synchronized void tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -297,7 +297,7 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public String cancelTransaction(String transactionIdStr) throws SQLException {
+    public synchronized String cancelTransaction(String transactionIdStr) throws SQLException {
         try {
             int transactionId = Integer.parseInt(transactionIdStr);
             psql = connection.prepareStatement(

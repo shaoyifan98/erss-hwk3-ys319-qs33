@@ -10,13 +10,13 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.xml.sax.SAXException;
 
-public class requestHandler implements Runnable {
+public class RequestHandler implements Runnable {
     private Socket socket;
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private List<Action> actions;
 
-    public requestHandler(Socket socket) {
+    public RequestHandler(Socket socket) {
 
         this.socket = socket;
         try {
