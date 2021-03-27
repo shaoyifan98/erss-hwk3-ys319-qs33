@@ -3,36 +3,11 @@
  */
 package erss.hwk3.ys319.qs33;
 
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 public class App {
     public static void main(String[] args) {
-        Connection connection = null;
-        Statement statement = null;
-        try{
-            String url = "jdbc:postgresql://67.159.88.57:5432/mydb";
-            String user = "postgres";
-            String password = "postgres";
-            Class.forName("org.postgresql.Driver");
-            connection = DriverManager.getConnection(url, user, password);
-            System.out.println("hello" + connection);
-            
-        }
-        catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        finally {
-            try {
-                connection.close();
-            }
-            catch (SQLException e) {
-                e.printStackTrace();
-            }
-        }
+        Server server = new Server();
+        server.recvRequest();
         
     }
 }

@@ -1,4 +1,5 @@
-<transactions id=\"123456\">
+<?xml version="1.0" encoding="UTF-8"?>
+<transactions id="123456">
    <order sym="SYM" amount="10" limit="153.11"/>
    <order sym="SYM" amount="-200" limit="133.11"/>
    <query id="1"/>
@@ -6,4 +7,3 @@
    <cancel id="122333"/>
    <cancel id="2"/>
 </transactions>
-

@@ -1,8 +1,8 @@
 <transactions id="1">
-   <order sym="REDHAT" amount="100" limit="1000"/> # buy 10 REDHAT at price <= 1000, should fail
-   <order sym="INTEL" amount="-200" limit="150"/> # sell 200 INTEL at price >= 150
-   <order sym="AMD" amount="50" limit="2"/> # buy 50 AMD at price <= 2
-   <query id="3"/> # query the transaction 3 (selling INTEL)
-   <cancel id="4"/> # cancel the transaction 4 (buying AMD)
-   <order sym="AMD" amount="50" limit="6"/> # buy 50 AMD at price <= 6
+   <order sym="REDHAT" amount="100" limit="1000"/> 
+   <order sym="INTEL" amount="-200" limit="150"/> 
+   <order sym="AMD" amount="50" limit="2"/> 
+   <query id="3"/> 
+   <cancel id="4"/> 
+   <order sym="AMD" amount="50" limit="6"/> 
 </transactions>

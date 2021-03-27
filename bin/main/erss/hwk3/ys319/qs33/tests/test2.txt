@@ -1,0 +1,25 @@
+<create>
+   <account id="1" balance="50000"/>
+   <account id="2" balance="600000"/>
+   <account id="3" balance="70000"/>
+   <account id="4" balance="100000"/>
+   <symbol sym="INTEL">
+      <account id="1">3000</account>
+      <account id="2">100</account>
+      <account id="3">777</account>
+      <account id="4">10</account>
+   </symbol>
+   <symbol sym="AMD">
+      <account id="1">650</account>
+      <account id="2">651</account>
+      <account id="3">568</account>
+      <account id="4">590</account>
+   </symbol>
+   <symbol sym="REDHAT">
+      <account id="9">650</account>
+      <account id="10">651</account>
+      <account id="1">568</account>
+      <account id="11">590</account>
+   </symbol>
+</create>
+

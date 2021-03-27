@@ -1,9 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <create>
-   <account id="123456" balance="1000000000000"/>
+   <account id="123456" balance="1000000"/>
    <symbol sym="SYM">
       <account id="123456">200</account>
       <account id="123457">30</account>
    </symbol>
    <account id="123456" balance="1000"/>
 </create>
-

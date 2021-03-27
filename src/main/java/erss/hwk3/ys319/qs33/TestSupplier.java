@@ -1,5 +1,6 @@
 package erss.hwk3.ys319.qs33;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -15,11 +16,16 @@ public class TestSupplier {
         this.answers = new ArrayList<>();
         int numOfTests = 6;
         for (int i = 0; i < numOfTests; i++) {
-            String testPathStr = "./tests/test" + i + ".txt";
+           // erss-hwk3-ys319-qs33/tests/test0.txt
+           // String testPathStr = "./tests/test" + i + ".txt";
+            String testPathStr = "./erss-hwk3-ys319-qs33/tests/test" + i + ".txt";
+            //File tests = new File(testPathStr);
+            //System.out.println(System.getProperty("user.dir"));
             Path testPath = Paths.get(testPathStr);
-            String ansPathStr = "./tests/ans" + i + ".txt";
+            String ansPathStr = "./erss-hwk3-ys319-qs33/tests/ans" + i + ".txt";
             Path ansPath = Paths.get(ansPathStr);
             String test = Files.readString(testPath);
+            //System.out.println("client content:" + test);
             String ans = Files.readString(ansPath);
             this.tests.add(test);
             this.answers.add(ans);

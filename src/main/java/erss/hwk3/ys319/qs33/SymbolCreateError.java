@@ -13,7 +13,7 @@ public class SymbolCreateError implements Error {
 
     @Override
     public String toString() {
-        StringBuilder sb = new StringBuilder("   error sym=\"");
+        StringBuilder sb = new StringBuilder("   <error sym=\"");
         sb.append(symbol + "\" id=\"");
         sb.append(accountId + "\">");
         sb.append(msg);

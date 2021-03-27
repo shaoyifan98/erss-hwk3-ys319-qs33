@@ -34,6 +34,8 @@ public class RequestHandler implements Runnable {
     public void run() {
         try {
             String req = (String) ois.readObject();
+            //System.out.println("received:");
+            //System.out.println(req);
             actions = XMLParser.parseXMLString(req);
             StringBuilder sb = new StringBuilder("<results>\n");
             //execute each action
@@ -44,6 +46,9 @@ public class RequestHandler implements Runnable {
             sb.append("</results>\n");
             String resp = sb.toString();
             oos.writeObject(resp);
+            ois.close();
+            oos.close();
+            socket.close();
         }
         catch(IllegalArgumentException e){
             e.printStackTrace();

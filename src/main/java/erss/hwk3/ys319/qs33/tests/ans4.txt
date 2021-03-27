@@ -1,0 +1,15 @@
+<results>
+   <opened sym="INTEL" amount="-100" limit="170" id="5"/>
+   <opened sym="AMD" amount="-20" limit="15" id="6"/>
+   <status id="3">
+      <open shares="200"/>
+   </status>
+   <error id="4">Transcation does not exist</error>
+   <opened sym="INTEL" amount="400" limit="180" id="7"/>
+   <status id="7">
+      <open shares="100"/>
+      <executed shares="200" price="150" time="0000000000"/>
+      <executed shares="100" price="170" time="0000000000"/>
+   </status>
+</results>
+

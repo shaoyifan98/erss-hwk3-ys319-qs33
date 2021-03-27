@@ -1,0 +1,4 @@
+<transactions id="3">
+   <order sym="INTEL" amount="-150" limit="100"/> # sell 150 INTEL at price >= 100, 8
+   <query id="8"/>
+</transactions>

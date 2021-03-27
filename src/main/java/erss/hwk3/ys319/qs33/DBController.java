@@ -146,7 +146,7 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public synchronized int trySellSymbol(int id, String symbol, int share, double price) throws Exception {
+    public  int trySellSymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -209,7 +209,7 @@ public class DBController {
         return sellOrderId;
     }
 
-    public synchronized int tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
+    public  int tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -272,7 +272,7 @@ public class DBController {
         return buyOrderId;
     }
 
-    public int openOrder(String idStr, String symbol, int share, double price, boolean isSell) {
+    public synchronized int openOrder(String idStr, String symbol, int share, double price, boolean isSell) {
         try {
             int id = Integer.parseInt(idStr);
             if (isSell) {
@@ -292,7 +292,7 @@ public class DBController {
     private void tryAddIntoExecuted(int transactionId, int accountId, String symbol, int share, double price)
             throws SQLException {
         psql = connection.prepareStatement(
-            "INSERT INTO executed(transaction_id, account_id, symbol, shares, price)" + "VALUES(?, ?, ?, ?, ?)", PreparedStatement.RETURN_GENERATED_KEYS);
+            "INSERT INTO executed(transaction_id, account_id, symbol, shares, price)" + "VALUES(?, ?, ?, ?, ?)");
         psql.setInt(1, transactionId);
         psql.setInt(2, accountId);
         psql.setString(3, symbol);
@@ -306,7 +306,7 @@ public class DBController {
             int accountId = Integer.parseInt(accountIdStr);
             int transactionId = Integer.parseInt(transactionIdStr);
             psql = connection.prepareStatement(
-                "UPDATE transactions SET status = ? AND create_at = ? WHERE id = ? AND account_id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
+                "UPDATE transactions SET status = ? , created_at = ? WHERE id = ? AND account_id = ?");
             psql.setInt(1, 1);
             psql.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
             psql.setInt(3, transactionId);
@@ -329,11 +329,10 @@ public class DBController {
         }
     }
 
-    private String tryQueryUnexecuted(int transactionId) throws SQLException {
+    private  String tryQueryUnexecuted(int transactionId) throws SQLException {
         psql = connection.prepareStatement(
-            "SELECT shares, status, created_at from transactions WHERE transaction_id = ?",
-            PreparedStatement.RETURN_GENERATED_KEYS
-        );
+            "SELECT shares, status, created_at from transactions WHERE id = ?");
+        psql.setInt(1, transactionId);
         ResultSet rs = psql.executeQuery();
         // has a result
         if (rs.next()) {
@@ -356,11 +355,10 @@ public class DBController {
         }
     }
 
-    private String tryQueryExecuted(int transactionId) throws SQLException {
+    private  String tryQueryExecuted(int transactionId) throws SQLException {
         psql = connection.prepareStatement(
-            "SELECT shares, price, created_at from executed WHERE transaction_id = ?",
-            PreparedStatement.RETURN_GENERATED_KEYS
-        );
+            "SELECT shares, price, created_at from executed WHERE transaction_id = ?");
+        psql.setInt(1, transactionId);
         ResultSet rs = psql.executeQuery();
         StringBuilder sb = new StringBuilder();
         while (rs.next()) {
@@ -372,7 +370,7 @@ public class DBController {
         return sb.toString();
     }
 
-    public String queryTransaction(String transactionIdStr) throws SQLException {
+    public synchronized String queryTransaction(String transactionIdStr) throws SQLException {
         StringBuilder result = new StringBuilder("   <status> id=\"" + transactionIdStr + "\">" + "\n");
         try {
             int transactionId = Integer.parseInt(transactionIdStr);
@@ -386,6 +384,7 @@ public class DBController {
             throw new NumberFormatException("   <error id=\"" + transactionIdStr + "\">" + msg + "</error>\n");
         }
         catch (SQLException e1) {
+            e1.printStackTrace();
             String msg = "Unexpected SQL exception";
             throw new SQLException("   <error id=\"" + transactionIdStr + "\">" + msg + "</error>\n");
         }

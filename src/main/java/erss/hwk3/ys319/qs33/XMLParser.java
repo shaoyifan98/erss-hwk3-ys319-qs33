@@ -26,6 +26,7 @@ public class XMLParser {
     }
 
     private static Document getXMLFromString(String xmlText) throws ParserConfigurationException, SAXException, IOException {
+        System.out.println(xmlText);
         DocumentBuilderFactory f = DocumentBuilderFactory.newInstance();
         DocumentBuilder builder = f.newDocumentBuilder();
         InputSource input = new InputSource(new StringReader(xmlText));
