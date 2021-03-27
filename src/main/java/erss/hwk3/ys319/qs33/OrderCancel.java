@@ -3,14 +3,14 @@ package erss.hwk3.ys319.qs33;
 
 public class OrderCancel extends OrderExec {
 
-    public OrderCancel(String _transactId) {
-        super(_transactId);
+    public OrderCancel(String _accountId, String _transactId) {
+        super(_accountId, _transactId);
     }
 
     @Override
     public String execute() {
         try {
-            return DBController.getDBController().cancelTransaction(transactId);
+            return DBController.getDBController().cancelTransaction(accountId, transactId);
         }
         catch (Exception e) {
             return e.getMessage();
@@ -19,6 +19,6 @@ public class OrderCancel extends OrderExec {
 
     @Override
     public String toString() {
-        return "Cancelling " + this.transactId + "\n";
+        return "Cancelling " + this.transactId + " of account " + accountId + "\n";
     }
 }

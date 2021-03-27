@@ -2,8 +2,8 @@ package erss.hwk3.ys319.qs33;
 
 public class OrderQuery extends OrderExec {
 
-    public OrderQuery(String _transactId) {
-        super(_transactId);
+    public OrderQuery(String _accountId, String _transactId) {
+        super(_accountId, _transactId);
     }
 
     @Override
@@ -18,7 +18,7 @@ public class OrderQuery extends OrderExec {
 
     @Override
     public String toString() {
-        return "Querying " + this.transactId + "\n";
+        return "Querying " + this.transactId + " of account " + accountId + "\n";
     }
 
 }

@@ -1,6 +1,5 @@
 package erss.hwk3.ys319.qs33;
 
-import java.security.Timestamp;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -30,6 +29,7 @@ public class DBController {
     }
 
     public void init() throws SQLException {
+        String clearOldTable = "DROP TABLE IF EXISTS executed, user_share, transactions, account";
         String createAccountTable = 
             "CREATE TABLE if not exists \"account\"(account_id INTEGER primary key,balances NUMERIC(10, 2) NOT NULL)";
         String createUserShareTable = 
@@ -40,13 +40,14 @@ public class DBController {
             "CREATE TABLE if not exists \"executed\"(id SERIAL primary key,transaction_id INTEGER REFERENCES transactions(id), account_id INTEGER REFERENCES account(account_id),symbol character varying(100) NOT NULL,shares INTEGER NOT NULL, price NUMERIC(10, 2) NOT NULL, created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP(0))";
 
         statement = connection.createStatement();
+        statement.executeUpdate(clearOldTable);
         statement.executeUpdate(createAccountTable);
         statement.executeUpdate(createUserShareTable);
         statement.executeUpdate(createTransactionsTable);
         statement.executeUpdate(createExecutedTable);
     }
 
-    public synchronized void  createAccount(int id, double balances) {
+    public synchronized void createAccount(int id, double balances) {
         try {
             psql = connection.prepareStatement("INSERT INTO account(account_id, balances)" + "VALUES(?, ?)");
             psql.setInt(1, id);
@@ -100,15 +101,16 @@ public class DBController {
         }
     }
 
-    public synchronized void createSymbol(String idStr, String symbol, int share) throws Exception {
+    public synchronized String createSymbol(String idStr, String symbol, int share) {
         try {
             int id = Integer.parseInt(idStr);
             tryAddSymbol(id, symbol, share);
+            return "   <created sym=\"" + symbol + "\" id=\"" + id + "\"/>\n";
         }
         catch (Exception e) {
             Error error = new SymbolCreateError(symbol, idStr, e.getMessage());
             String errorXML = error.toString();
-            throw new SQLException(errorXML);
+            return errorXML;
         }
     }
 
@@ -144,7 +146,7 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public synchronized void trySellSymbol(int id, String symbol, int share, double price) throws Exception {
+    public synchronized int trySellSymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -204,9 +206,10 @@ public class DBController {
         //update the db for seller
         tryAddBalance(id, gain);
         tryReduceTransactionShare(sellOrderId, share - leftShare);
+        return sellOrderId;
     }
 
-    public synchronized void tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
+    public synchronized int tryBuySymbol(int id, String symbol, int share, double price) throws Exception {
         if (!hasAccountId(id)) {
             throw new IllegalArgumentException("Account does not exist!");
         }
@@ -266,16 +269,17 @@ public class DBController {
         //update the db for buyer
         tryAddBalance(id, gain);
         tryReduceTransactionShare(buyOrderId, share - leftShare);
+        return buyOrderId;
     }
 
-    public void openOrder(String idStr, String symbol, int share, double price, boolean isSell) {
+    public int openOrder(String idStr, String symbol, int share, double price, boolean isSell) {
         try {
             int id = Integer.parseInt(idStr);
             if (isSell) {
-                trySellSymbol(id, symbol, share, price);
+                return trySellSymbol(id, symbol, share, price);
             }
             else {
-                tryBuySymbol(id, symbol, share, price);
+                return tryBuySymbol(id, symbol, share, price);
             }
         }
         catch (Exception e) {
@@ -297,23 +301,25 @@ public class DBController {
         psql.executeUpdate();
     }
 
-    public synchronized String cancelTransaction(String transactionIdStr) throws SQLException {
+    public synchronized String cancelTransaction(String accountIdStr, String transactionIdStr) throws SQLException {
         try {
+            int accountId = Integer.parseInt(accountIdStr);
             int transactionId = Integer.parseInt(transactionIdStr);
             psql = connection.prepareStatement(
-                "UPDATE transactions SET status = ? AND create_at = ? WHERE id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
+                "UPDATE transactions SET status = ? AND create_at = ? WHERE id = ? AND account_id = ?", PreparedStatement.RETURN_GENERATED_KEYS);
             psql.setInt(1, 1);
             psql.setTimestamp(2, new java.sql.Timestamp(System.currentTimeMillis()));
             psql.setInt(3, transactionId);
+            psql.setInt(4, accountId);
             if (psql.executeUpdate() == 0) {
                 String msg = "Transcation does not exist";
                 Error error = new TransCancelError(transactionIdStr, msg);
                 throw new IllegalArgumentException(error.toString());
             }
-            StringBuilder sb = new StringBuilder("<canceled id=\"" + transactionId + "\">\n");
+            StringBuilder sb = new StringBuilder("   <canceled id=\"" + transactionId + "\">\n");
             sb.append(tryQueryUnexecuted(transactionId));
             sb.append(tryQueryExecuted(transactionId));
-            sb.append("</canceled>\n");
+            sb.append("   </canceled>\n");
             return sb.toString();
         }
         catch (NumberFormatException e) {
@@ -340,7 +346,8 @@ public class DBController {
                 return "      <open shares=\"" + shares + "\"/>";
             }
             else {
-                return "      <canceled shares=\"" + shares + "\"/>";
+                java.sql.Timestamp t = rs.getTimestamp(3);
+                return "      <canceled shares=\"" + shares + "\" time=\"" + t + "\"/>";
             }
         }
         else {
@@ -359,7 +366,6 @@ public class DBController {
         while (rs.next()) {
             int shares = rs.getInt(1);
             double price = rs.getDouble(2);
-            // Time t = rs.getTime(3);
             java.sql.Timestamp t = rs.getTimestamp(3);
             sb.append("      <executed shares=\"" + shares + "\" price=\"" + price + "\" time=\"" + t + "\"/>\n");
         }

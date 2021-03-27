@@ -44,10 +44,10 @@ public class XMLParserTest {
 		requests.collect();
 		String actual = requests.toString();
 		String expected = 
-			"Opening a buying order of 100 SYM with limit 133.11\n" +
-			"Opening a selling order of 100 SYM with limit 133.11\n" +
-			"Querying 135678\n" +
-			"Cancelling 122333\n";
+			"Opening a buying order by 123455 of 100 SYM with limit 133.11\n" +
+			"Opening a selling order by 123455 of 100 SYM with limit 133.11\n" +
+			"Querying 135678 of account 123455\n" +
+			"Cancelling 122333 of account 123455\n";
 		assertEquals(expected, actual);
 	}
 

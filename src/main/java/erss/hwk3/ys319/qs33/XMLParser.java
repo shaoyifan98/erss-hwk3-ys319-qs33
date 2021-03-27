@@ -43,7 +43,7 @@ public class XMLParser {
             if (!rootElement.hasAttribute("id")) {
                 throw new IllegalArgumentException("No account ID for transactions");
             }
-            String accountId = rootElement.getAttribute("account");
+            String accountId = rootElement.getAttribute("id");
             return new TransactRequestList(requests, accountId);
         }
         return null;

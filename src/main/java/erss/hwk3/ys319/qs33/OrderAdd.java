@@ -26,13 +26,19 @@ public class OrderAdd extends TransAction {
     @Override
     public String execute() {
         try {
-            DBController.getDBController().openOrder(accountId, symbolName, amount, limit, isSell);
+            int transactionId = DBController.getDBController().openOrder(accountId, symbolName, amount, limit, isSell);
+            if (isSell) {
+                return "<opened sym=\"" + symbolName + "\" amount=-\"" + amount 
+                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\">\n";
+            }
+            else {
+                return "<opened sym=\"" + symbolName + "\" amount=\"" + amount 
+                    + "\" limit=\"" + limit + "\" id=\"" + transactionId + "\">\n";
+            }
         }
         catch (Exception e) {
             return e.getMessage();
         }
-        return "<opened sym=\"" + symbolName + "\" amount=\"" + amount 
-                + "\" limit=\"" + limit + "\" id=\"" + accountId + "\">\n";
     }
 
     @Override
@@ -45,7 +51,7 @@ public class OrderAdd extends TransAction {
         else {
             strBuild.append("buying order");
         }
-        strBuild.append(" of " + amount + " " + symbolName + " with limit " + limit + "\n");
+        strBuild.append(" by " + accountId + " of " + amount + " " + symbolName + " with limit " + limit + "\n");
         return strBuild.toString();
     }
 

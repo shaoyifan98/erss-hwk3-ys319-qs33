@@ -34,7 +34,7 @@ public class TransactRequestList implements RequestList {
             throw new IllegalArgumentException("Invalid order query");
         }
         String transactId = element.getAttribute("id");
-        return new OrderQuery(transactId);
+        return new OrderQuery(accountId, transactId);
     }
 
     private Action parseOrderCancel(Element element) {
@@ -42,7 +42,7 @@ public class TransactRequestList implements RequestList {
             throw new IllegalArgumentException("Invalid order cancel");
         }
         String transactId = element.getAttribute("id");
-        return new OrderCancel(transactId);
+        return new OrderCancel(accountId, transactId);
     }
 
     private Action parseTransact(Element element) {

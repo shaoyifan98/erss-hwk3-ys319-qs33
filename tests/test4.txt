@@ -1,0 +1,8 @@
+<transactions id="2">
+   <order sym="INTEL" amount="-100" limit="170"/> # sell 100 INTEL at price >= 170, 5
+   <order sym="AMD" amount="-20" limit="15"/> # sell 20 AMD at price <= 15, 6
+   <query id="3"/> # query the transaction 3 (selling INTEL)
+   <cancel id="4"/> # cancel the transaction 4 (should fail)
+   <order sym="INTEL" amount="400" limit="180"/> # buy 400 INTEL at price <= 180, 7
+   <query id="7"/>
+</transactions>

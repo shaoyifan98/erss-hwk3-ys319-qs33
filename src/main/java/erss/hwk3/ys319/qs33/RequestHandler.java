@@ -39,10 +39,11 @@ public class RequestHandler implements Runnable {
             //execute each action
             for(int i = 0; i < actions.size(); ++i) {
                 String result = actions.get(i).execute();
-                sb.append("   " + result);
+                sb.append(result);
             }
-            sb.append("</create>\n");
+            sb.append("</results>\n");
             String resp = sb.toString();
+            oos.writeObject(resp);
         }
         catch(IllegalArgumentException e){
             e.printStackTrace();
