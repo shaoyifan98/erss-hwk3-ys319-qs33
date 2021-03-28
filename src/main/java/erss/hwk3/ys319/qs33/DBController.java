@@ -16,9 +16,9 @@ public class DBController {
 
     private DBController() {
         try {
-            String url = "jdbc:postgresql://67.159.88.156:5432/mydb";
+            String url = "jdbc:postgresql://db:5432/postgres";
             String user = "postgres";
-            String password = "12345";
+            String password = "postgres";
             Class.forName("org.postgresql.Driver");
             connection = DriverManager.getConnection(url, user, password);
             System.out.println("Connected to " + connection);
