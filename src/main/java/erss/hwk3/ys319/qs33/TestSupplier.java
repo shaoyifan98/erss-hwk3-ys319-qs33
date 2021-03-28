@@ -16,7 +16,7 @@ public class TestSupplier {
         this.answers = new ArrayList<>();
         int numOfTests = 6;
         for (int i = 0; i < numOfTests; i++) {
-           // erss-hwk3-ys319-qs33/tests/test0.txt
+            // erss-hwk3-ys319-qs33/tests/test0.txt
             String testPathStr = "./tests/test" + i + ".txt";
             //String testPathStr = "./erss-hwk3-ys319-qs33/tests/test" + i + ".txt";
             //File tests = new File(testPathStr);
