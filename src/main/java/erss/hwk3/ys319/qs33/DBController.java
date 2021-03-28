@@ -6,6 +6,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Time;
 
 public class DBController {
     private Connection connection = null;
@@ -345,7 +346,8 @@ public class DBController {
                 return "      <open shares=\"" + shares + "\"/>\n";
             }
             else {
-                java.sql.Timestamp t = rs.getTimestamp(3);
+                java.sql.Timestamp t0 = rs.getTimestamp(3);
+                long t = t0.getTime();
                 return "      <canceled shares=\"" + shares + "\" time=\"" + t + "\"/>\n";
             }
         }
@@ -364,7 +366,8 @@ public class DBController {
         while (rs.next()) {
             int shares = rs.getInt(1);
             double price = rs.getDouble(2);
-            java.sql.Timestamp t = rs.getTimestamp(3);
+            java.sql.Timestamp t0 = rs.getTimestamp(3);
+            long t = t0.getTime();
             sb.append("      <executed shares=\"" + shares + "\" price=\"" + price + "\" time=\"" + t + "\"/>\n");
         }
         return sb.toString();

@@ -7,7 +7,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.net.Socket;
 
-public class Client extends Thread{
+public class Client extends Thread {
     private ObjectInputStream ois;
     private ObjectOutputStream oos;
     private Socket s;
@@ -58,7 +58,7 @@ public class Client extends Thread{
         close();
     }
 
-    public void close(){
+    public void close() {
         try {
             oos.close();
             ois.close();
