@@ -5,13 +5,13 @@ import java.util.Random;
 
 public class RandActionGenerator {
 
-    public Random generator;
+    public static Random generator = new Random(991);
     private static int accountIndex = 0;
     private static int symbolIndex = 0;
     private static int orderIndex = 0;
 
     public RandActionGenerator() {
-        this.generator = new Random(991);
+        //this.generator = new Random(991);
     }
 
     private Action createRandAccount() {
@@ -45,8 +45,7 @@ public class RandActionGenerator {
         int checker = generator.nextInt();
         if (checker % 3 == 0) {
             amount = 40;
-        }
-        else if (checker % 2 == 0) {
+        } else if (checker % 2 == 0) {
             amount = 30;
         }
         if (generator.nextInt() % 2 == 0) {
@@ -94,16 +93,49 @@ public class RandActionGenerator {
         return requests;
     }
 
-    public static void main(String[] args) {
-        RandActionGenerator rand = new RandActionGenerator();
-        ArrayList<Action> reqs1 = rand.createCreationRequests();
-        for (Action a: reqs1) {
-            System.out.print(a.toString());
+    public static String createAccount(int i) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n");
+        sb.append("<create>\n");
+        sb.append("  <account id=\"" + i + "\" balance=\"1000000\"/>\n");
+        sb.append("  <symbol sym=\"A\">\n");
+        sb.append("    <account id=\"" + i + "\">2000</account>\n");
+        sb.append("  </symbol>\n");
+        sb.append("  <symbol sym=\"B\">\n");
+        sb.append("    <account id=\"" + i + "\">2000</account>\n");
+        sb.append("  </symbol>\n");
+        sb.append("  <symbol sym=\"C\">\n");
+        sb.append("    <account id=\"" + i + "\">2000</account>\n");
+        sb.append("  </symbol>\n");
+        sb.append("</create>");
+        return sb.toString();
+    }
+
+    public static String getRandomAction() {
+        StringBuilder sb = new StringBuilder();
+        int i = Math.abs(generator.nextInt()) % 2; // sell or buy
+        int account = Math.abs(generator.nextInt()) % 5; // acount from 0 - 4
+        char stock = (char) ('A' + Math.abs(generator.nextInt()) % 3); // A, B C
+        int amount = Math.abs(generator.nextInt()) % 200;
+        int price = Math.abs(generator.nextInt()) % 10;
+        if (i == 0) { // sell
+            sb.append("<transactions id=\"" + account + "\">\n");
+            sb.append("  <order sym=\"" + stock + "\" amount=\"" + (-amount) + "\" limit=\"" + price + "\"/> \n");
+            sb.append("</transactions>\n");
+        } else if (i == 1) { // buy
+            sb.append("<transactions id=\"" + account + "\">\n");
+            sb.append("  <order sym=\"" + stock + "\" amount=\"" + (amount) + "\" limit=\"" + price + "\"/> \n");
+            sb.append("</transactions>\n");
         }
-        System.out.println();
-        ArrayList<Action> reqs2 = rand.createTransActions();
-        for (Action a: reqs2) {
-            System.out.print(a.toString());
+        return sb.toString();
+
+    }
+
+    public static void main(String[] args) {
+
+        RandActionGenerator r = new RandActionGenerator();
+        for (int i = 0; i < 10; ++i) {
+            System.out.println(r.createAccount(i));
         }
     }
 }

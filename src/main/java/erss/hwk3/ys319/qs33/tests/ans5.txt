@@ -1,7 +1,0 @@
-<results>
-   <opened sym="INTEL" amount="-150" limit="100" id="8"/>
-   <status id="8">
-      <open shares="50"/>
-      <executed shares="100" price="180 time="0000000000"/>
-   </status>
-</results>
