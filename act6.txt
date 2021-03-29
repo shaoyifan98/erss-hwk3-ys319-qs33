@@ -1,5 +1,0 @@
-<results>
-   <created id="11111"/>
-   <created sym="SYM" id="11111"/>
-</results>
-

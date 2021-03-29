@@ -1,7 +1,0 @@
-<results>
-   <opened sym="SYM" amount="200" limit="1.0" id="10"/>
-   <canceled id="10">
-      <canceled shares="200" time="1617031031926"/>
-   </canceled>
-</results>
-
