@@ -1,5 +1,4 @@
-package erss.hwk3.ys319.qs33;
-
+package client;
 import java.util.ArrayList;
 import java.util.Random;
 
