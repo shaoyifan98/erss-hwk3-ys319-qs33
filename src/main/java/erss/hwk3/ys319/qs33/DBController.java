@@ -323,16 +323,18 @@ public class DBController {
             psql.setInt(1, transactionId);
             ResultSet rs = null;
             rs = psql.executeQuery();
-            String symbol = rs.getString(1);
-            int shares = rs.getInt(2);
-            double limit_price = rs.getDouble(3);
-            boolean is_sell = rs.getBoolean(4);
-            if(is_sell){
-                tryAddSymbol(accountId, symbol, shares);
-            }else{
-                tryAddBalance(accountId, shares * limit_price);
+            while (rs.next()) {
+                String symbol = rs.getString(1);
+                int shares = rs.getInt(2);
+                double limit_price = rs.getDouble(3);
+                boolean is_sell = rs.getBoolean(4);
+                if(is_sell){
+                    tryAddSymbol(accountId, symbol, shares);
+                }
+                else{
+                    tryAddBalance(accountId, shares * limit_price);
+                }
             }
-
             StringBuilder sb = new StringBuilder("   <canceled id=\"" + transactionId + "\">\n");
             sb.append(tryQueryUnexecuted(transactionId));
             sb.append(tryQueryExecuted(transactionId));
@@ -340,6 +342,11 @@ public class DBController {
             return sb.toString();
         }
         catch (NumberFormatException e) {
+            String msg = e.getMessage();
+            Error error = new TransCancelError(transactionIdStr, msg);
+            return error.toString();
+        }
+        catch (SQLException e) {
             String msg = e.getMessage();
             Error error = new TransCancelError(transactionIdStr, msg);
             return error.toString();

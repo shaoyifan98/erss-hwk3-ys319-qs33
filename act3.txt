@@ -6,7 +6,7 @@
       <open shares="200"/>
    </status>
    <canceled id="4">
-      <canceled shares="50" time="1616921585741"/>
+      <canceled shares="50" time="1617031031767"/>
    </canceled>
    <opened sym="AMD" amount="50" limit="6.0" id="5"/>
 </results>
