@@ -7,6 +7,7 @@ package erss.hwk3.ys319.qs33;
 public class App {
     public static void main(String[] args) {
         Server server = new Server();
+        System.out.println("server start!");
         server.recvRequest();
     }
 }

@@ -51,19 +51,19 @@ public class RequestHandler implements Runnable {
             socket.close();
         }
         catch(IllegalArgumentException e){
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (ClassNotFoundException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (IOException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (ParserConfigurationException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         catch (SAXException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
 
     }
