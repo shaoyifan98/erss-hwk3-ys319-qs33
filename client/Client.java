@@ -111,8 +111,8 @@ public class Client extends Thread {
         }
 
         long endTime = System.currentTimeMillis();
-        System.out.println("Start from:" + endTime);
-        System.out.println("Used:" + (endTime - startTime) + "ms");
+        System.out.println("End to:" + endTime);
+        System.out.println(scale + " requests used:" + (endTime - startTime) + "ms");
 
         
         

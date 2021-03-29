@@ -56,7 +56,7 @@ public class DBController {
             psql.executeUpdate();
         }
         catch (SQLException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
             throw new IllegalArgumentException("Account already exists");
         }
     }
