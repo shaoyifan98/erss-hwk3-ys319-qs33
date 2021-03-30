@@ -46,7 +46,7 @@ public class ClientAccTest extends Thread {
         System.out.println(actual);
         BufferedWriter outFile;
         try {
-            String filename = "./clientacctest/act" + index + ".txt";
+            String filename = "./clientacctest/tests/act" + index + ".txt";
             System.out.println(index);
             index++;
             outFile = new BufferedWriter(new FileWriter(filename));

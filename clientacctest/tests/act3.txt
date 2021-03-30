@@ -1,13 +1,13 @@
 <results>
-   <error sym="REDHAT" amount="100" limit="1000.0">Account does not have enough money</error>
-   <opened sym="INTEL" amount="-200" limit="150.0" id="3"/>
-   <opened sym="AMD" amount="50" limit="2.0" id="4"/>
+   <opened sym="REDHAT" amount="100" limit="1000.0" id="23"/>
+   <opened sym="INTEL" amount="-200" limit="150.0" id="24"/>
+   <opened sym="AMD" amount="50" limit="2.0" id="25"/>
    <status id="3">
-      <open shares="200"/>
+      <executed shares="200" price="150.0" time="1617078363000"/>
    </status>
    <canceled id="4">
-      <canceled shares="50" time="1617029003061"/>
+      <canceled shares="50" time="1617078629840"/>
    </canceled>
-   <opened sym="AMD" amount="50" limit="6.0" id="5"/>
+   <opened sym="AMD" amount="50" limit="6.0" id="26"/>
 </results>
 

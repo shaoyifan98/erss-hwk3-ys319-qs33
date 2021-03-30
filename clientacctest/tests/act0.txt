@@ -1,5 +1,5 @@
 <results>
-   <created id="123456"/>
+   <error id="123456">Account already exists</error>
    <created sym="SYM" id="123456"/>
    <error sym="SYM" id="123457">Account does not exist</error>
    <error id="123456">Account already exists</error>
