@@ -15,9 +15,9 @@ sudo docker-compose up
 If you see a line saying `Server start!`, the server has successfully started. 
 
 ## To Use Test Infrastructure
-# cd into testing/
-# Please use jdk11 or above java environment to run the test!
-# if you can not compile the test, please 1.delete old *.class file in the test 2.run with sudo 3. make sure you are in the right file path
+cd into testing/
+Please use jdk11 or above java environment to run the test!
+if you can not compile the test, please 1.delete old *.class file in the test 2.run with sudo 3. make sure you are in the right file path
 
 ### Accuracy Tests
 
