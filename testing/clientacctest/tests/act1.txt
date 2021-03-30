@@ -1,0 +1,17 @@
+<results>
+   <opened sym="SYM" amount="10" limit="153.11" id="1"/>
+   <opened sym="SYM" amount="-200" limit="133.11" id="2"/>
+   <status id="1">
+      <executed shares="10" price="153.11" time="1617089622000"/>
+   </status>
+   <status id="2">
+      <open shares="190"/>
+      <executed shares="10" price="153.11" time="1617089622000"/>
+   </status>
+   <error id="122333">Transcation does not exist</error>
+   <canceled id="2">
+      <canceled shares="190" time="1617089622358"/>
+      <executed shares="10" price="153.11" time="1617089622000"/>
+   </canceled>
+</results>
+

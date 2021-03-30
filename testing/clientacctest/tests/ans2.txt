@@ -1,8 +1,8 @@
 <results>
-   <error id="1">Account already exists</error>
-   <error id="2">Account already exists</error>
-   <error id="3">Account already exists</error>
-   <error id="4">Account already exists</error>
+   <created id="1"/>
+   <created id="2"/>
+   <created id="3"/>
+   <created id="4"/>
    <created sym="INTEL" id="1"/>
    <created sym="INTEL" id="2"/>
    <created sym="INTEL" id="3"/>
