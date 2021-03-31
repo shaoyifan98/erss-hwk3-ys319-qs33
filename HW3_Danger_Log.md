@@ -30,7 +30,14 @@ We want to make sure that if there are exceptions thrown after we parse the XML 
 * Get the exception message. 
 * Change this into an XML-formed string and append them to the existing response. 
 
-## 3.29
+## 3.28
 
 We let all threads share the same database connection. This will limit the request resolving speed. Maybe we will enable them to share multiple database connections. 
 
+## 3.29
+
+If we receive a string that is not even an XML-format string, our server will not respond. It will simply throw the exception and then catch it itself. Maybe we also need to respond to the client about the issue. 
+
+## 3.29
+
+Our server uses a fixed-sized thread pool, which ensures that we use the system-level threads in a controllable way. Maybe we need to do some new testing to find the best size of the thread pool. 
